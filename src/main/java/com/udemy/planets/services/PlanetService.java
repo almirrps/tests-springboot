@@ -1,13 +1,22 @@
 package com.udemy.planets.services;
 
 import com.udemy.planets.models.PlanetModel;
+import com.udemy.planets.repositories.PlanetRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+@Service
+public class PlanetService {
 
-public interface PlanetService {
+    private PlanetRepository planetRepository;
 
-    Optional<PlanetModel> findById(Long id);
-    PlanetModel save(PlanetModel planetModel);
-    void delete(PlanetModel planetModel);
+    //Realizando a injeção via construtor (ajuda na hora de realizar os testes
+    public PlanetService(PlanetRepository planetRepository) {
+        this.planetRepository = planetRepository;
+    }
+
+    public PlanetModel create(PlanetModel planetModel) {
+        return planetRepository.save(planetModel);
+
+    }
 
 }

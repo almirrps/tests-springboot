@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/planets")
 public class PlanetController {
@@ -17,29 +15,10 @@ public class PlanetController {
     PlanetService planetService;
 
     @PostMapping
-    public ResponseEntity<Object> savingPlanet(@RequestBody PlanetModel planetModel) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(planetService.save(planetModel));
-    }
+    public ResponseEntity<PlanetModel> create(@RequestBody PlanetModel planetModel) {
+        PlanetModel planetCreated = planetService.create(planetModel);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> findPlanetById(@PathVariable(value = "id", required = true) Long id) {
-        Optional<PlanetModel> planetModelOptional = planetService.findById(id);
-        if (!planetModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Planet not found.");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(planetModelOptional.get());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletePlanet(@PathVariable(value = "id") Long id) {
-        Optional<PlanetModel> planetModelOptional = planetService.findById(id);
-        if (!planetModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Planet not found.");
-        }
-
-        planetService.delete(planetModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Planet deleted successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(planetCreated);
     }
 
 }
