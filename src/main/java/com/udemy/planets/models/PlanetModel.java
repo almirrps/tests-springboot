@@ -1,5 +1,7 @@
 package com.udemy.planets.models;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,12 @@ public class PlanetModel {
     private String name;
     private String climate;
     private String terrain;
+
+    public PlanetModel(String name, String climate, String terrain) {
+        this.name = name;
+        this.climate = climate;
+        this.terrain = terrain;
+    }
 
     public Long getId() {
         return id;
@@ -43,6 +51,12 @@ public class PlanetModel {
 
     public void setTerrain(String terrain) {
         this.terrain = terrain;
+    }
+
+    //Utilizando o equals da dependência Apache.Commons (ver pom.xml)
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(obj, this);
     }
 
 }

@@ -16,7 +16,6 @@ public class PlanetService {
 
     public PlanetModel create(PlanetModel planetModel) {
         return planetRepository.save(planetModel);
-
     }
 
 }
