@@ -1,11 +1,14 @@
 package com.udemy.planets.services;
 
 import static com.udemy.planets.commons.PlanetConstants.PLANET_MODEL;
+import static com.udemy.planets.commons.PlanetConstants.INVALID_PLANET_MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import com.udemy.planets.models.PlanetModel;
 import com.udemy.planets.repositories.PlanetRepository;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,4 +46,12 @@ public class PlanetServiceTest {
         assertThat(sut).isEqualTo(PLANET_MODEL); //Verificando se o retorno dele corresponde com o esperado
     }
 
+    @Test
+    public void createPlanet_WithInvalidData_ThrowsException() {
+        // Colocando os stubs para verificar se a exceção acontece
+        when(planetRepository.save(INVALID_PLANET_MODEL)).thenThrow(RuntimeException.class);
+
+        // Testando a condição, se a exceção está realmente acontecendo
+        assertThatThrownBy(() -> planetService.create(INVALID_PLANET_MODEL)).isInstanceOf(RuntimeException.class);
+    }
 }

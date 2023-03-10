@@ -5,5 +5,6 @@ import com.udemy.planets.models.PlanetModel;
 public class PlanetConstants {
 
     public static final PlanetModel PLANET_MODEL = new PlanetModel("name", "climate", "terrain");
+    public static final PlanetModel INVALID_PLANET_MODEL = new PlanetModel("", "", "");
 
 }
