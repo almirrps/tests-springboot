@@ -15,6 +15,14 @@ public class PlanetModel {
     private String climate;
     private String terrain;
 
+    public PlanetModel() {
+    }
+
+    public PlanetModel(String climate, String terrain) {
+        this.climate = climate;
+        this.terrain = terrain;
+    }
+
     public PlanetModel(String name, String climate, String terrain) {
         this.name = name;
         this.climate = climate;

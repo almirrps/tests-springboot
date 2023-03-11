@@ -4,8 +4,10 @@ import static com.udemy.planets.commons.PlanetConstants.PLANET_MODEL;
 import static com.udemy.planets.commons.PlanetConstants.INVALID_PLANET_MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.udemy.planets.commons.QueryBuilder;
 import com.udemy.planets.models.PlanetModel;
 import com.udemy.planets.repositories.PlanetRepository;
 import org.assertj.core.api.ThrowableAssert;
@@ -17,7 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 // (1) @SpringBootTest(classes = PlanetService.class)  //Para carregar um bean nesta classe (mais lento)
@@ -97,12 +103,47 @@ public class PlanetServiceTest {
 
     @Test
     public void getPlanet_ByUnexistingName_ReturnsEmpty() {
-        final String name = "Unexisting name"
+        final String name = "Unexisting name";
         // Arrange
         when(planetRepository.findByName(name)).thenReturn(Optional.empty());
 
         // Act
         Optional<PlanetModel> sut = planetService.getByName(name);
+
+        // Assert
+        assertThat(sut).isEmpty();
+    }
+
+    @Test
+    public void listPlanets_ReturnAllPlanets() {
+        // Criando o objeto lista
+        List<PlanetModel> planets = new ArrayList<>() {
+            {
+                add(PLANET_MODEL);
+            }
+        };
+        // Montando a query
+        Example<PlanetModel> query = QueryBuilder.makeQuery(new PlanetModel(PLANET_MODEL.getTerrain(), PLANET_MODEL.getClimate()));
+
+        // Arrange
+        when(planetRepository.findAll(query)).thenReturn(planets);
+
+        // Act
+        List<PlanetModel> sut = planetService.list(PLANET_MODEL.getTerrain(), PLANET_MODEL.getClimate());
+
+        // Assert
+        assertThat(sut).isNotEmpty();
+        assertThat(sut).hasSize(1);
+        assertThat(sut.get(0)).isEqualTo(PLANET_MODEL);
+    }
+
+    @Test
+    public void listPlanets_ReturnNoPlanets() {
+        // Arrange
+        when(planetRepository.findAll(any())).thenReturn(Collections.emptyList());
+
+        // Act
+        List<PlanetModel> sut = planetService.list(PLANET_MODEL.getTerrain(), PLANET_MODEL.getClimate());
 
         // Assert
         assertThat(sut).isEmpty();
