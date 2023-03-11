@@ -24,4 +24,8 @@ public class PlanetService {
         return planetRepository.findById(id);
     }
 
+    public Optional<PlanetModel> getByName(String name) {
+        return planetRepository.findByName(name);
+    }
+
 }
