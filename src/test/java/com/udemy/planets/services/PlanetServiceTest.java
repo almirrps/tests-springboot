@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 // (1) @SpringBootTest(classes = PlanetService.class)  //Para carregar um bean nesta classe (mais lento)
 // ou
 @ExtendWith(MockitoExtension.class) //Instanciando o Mockito para o teste unitário (mais rápido)
@@ -54,4 +56,30 @@ public class PlanetServiceTest {
         // Testando a condição, se a exceção está realmente acontecendo
         assertThatThrownBy(() -> planetService.create(INVALID_PLANET_MODEL)).isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    public void getPlanet_ByExistingId_ReturnsPlanet() {
+        // Arrange
+        when(planetRepository.findById(1L)).thenReturn(Optional.of(PLANET_MODEL));
+
+        // Act
+        Optional<PlanetModel> sut = planetService.get(1L);
+
+        // Assert
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PLANET_MODEL);
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingId_ReturnsEmpty() {
+        // Arrange
+        when(planetRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act
+        Optional<PlanetModel> sut = planetService.get(1L);
+
+        // Assert
+        assertThat(sut).isEmpty();
+    }
+
 }
