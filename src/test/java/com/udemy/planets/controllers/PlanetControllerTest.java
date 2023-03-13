@@ -83,4 +83,19 @@ public class PlanetControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet() throws Exception {
+        when(planetService.getByName(PLANET_MODEL.getName())).thenReturn(Optional.of(PLANET_MODEL));
+
+        mockMvc.perform(get("/planets/name/" + PLANET_MODEL.getName()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(PLANET_MODEL)); // Validando a propriedade raiz do json
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/planets/name/"))
+                .andExpect(status().isNotFound());
+    }
+
 }
