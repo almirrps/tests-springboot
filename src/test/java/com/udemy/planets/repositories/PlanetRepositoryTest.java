@@ -5,10 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.udemy.planets.models.PlanetModel;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import java.util.Optional;
 
 @DataJpaTest  // Cria automaticamente um banco em memória (H2) para os testes (ver dependência no POM.xml)
 public class PlanetRepositoryTest {
@@ -18,6 +21,11 @@ public class PlanetRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager; // Permite interagir com o BD sem precisar do Repository
+
+    @AfterEach // Chama o método abaixo à cada teste
+    public void afterEach() {
+        PLANET_MODEL.setId(null);
+    }
 
     @Test
     public void createPlanet_WithValidData_ReturnsPlanet() {
@@ -52,6 +60,23 @@ public class PlanetRepositoryTest {
         planetModel.setId(null);
 
         assertThatThrownBy(() -> planetRepository.save(planetModel)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    public void getPlanet_ByExistingId_ReturnsPlanet() {
+        PlanetModel planetModel = testEntityManager.persistFlushFind(PLANET_MODEL);
+
+        Optional<PlanetModel> planetOpt = planetRepository.findById(planetModel.getId());
+
+        assertThat(planetOpt).isNotEmpty();
+        assertThat(planetOpt.get()).isEqualTo(planetModel);
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingId_ReturnsEmpty() {
+        Optional<PlanetModel> planetOpt = planetRepository.findById(1L);
+
+        assertThat(planetOpt).isEmpty();
     }
 
 }
