@@ -3,6 +3,7 @@ package com.udemy.planets.models;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "planets")
@@ -11,8 +12,17 @@ public class PlanetModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty
+    @Column(nullable = false)
     private String name;
+
+    @NotEmpty
+    @Column(nullable = false)
     private String climate;
+
+    @NotEmpty
+    @Column(nullable = false)
     private String terrain;
 
     public PlanetModel() {
