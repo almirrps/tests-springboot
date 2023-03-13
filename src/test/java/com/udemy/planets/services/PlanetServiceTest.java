@@ -2,9 +2,9 @@ package com.udemy.planets.services;
 
 import static com.udemy.planets.commons.PlanetConstants.PLANET_MODEL;
 import static com.udemy.planets.commons.PlanetConstants.INVALID_PLANET_MODEL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.udemy.planets.commons.QueryBuilder;
@@ -147,6 +147,21 @@ public class PlanetServiceTest {
 
         // Assert
         assertThat(sut).isEmpty();
+    }
+
+    @Test
+    public void removePlanet_ByExistingName_ReturnsPlanet() {
+        // Não precisa de stub, somente verificar se não está retornando nenhuma exceção (porque o método é void)
+        assertThatCode(() -> planetService.remove(1L)).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void removePlanet_ByUnexistingName_ReturnsEmpty() {
+        // Informando a exceção que será lançada e colocando o stub
+        doThrow(new RuntimeException()).when(planetRepository).deleteById(99L);
+
+        // Pegando o retorno e verificando se a exceção esperada foi disparada
+        assertThatThrownBy(() -> planetService.remove(99L)).isInstanceOf(RuntimeException.class);
     }
 
 }
