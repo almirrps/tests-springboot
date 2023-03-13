@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.udemy.planets.models.PlanetModel;
 import com.udemy.planets.services.PlanetService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,22 @@ public class PlanetControllerTest {
         mockMvc.perform(post("/planets").content(objectMapper.writeValueAsString(PLANET_MODEL)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(PLANET_MODEL)); // Validando a propriedade raiz do json
+    }
+
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
+        PlanetModel emptyPlanet = new PlanetModel();
+        PlanetModel invalidPlanet = new PlanetModel("", "", "");
+
+        mockMvc.perform(
+                    post("/planets").content(objectMapper.writeValueAsString(emptyPlanet))
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity()); // Validando a propriedade raiz do json
+
+        mockMvc.perform(
+                        post("/planets").content(objectMapper.writeValueAsString(invalidPlanet))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }
