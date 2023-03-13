@@ -150,13 +150,13 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void removePlanet_ByExistingName_ReturnsPlanet() {
+    public void removePlanet_WithExistingId_doesNotThrowAnyException() {
         // Não precisa de stub, somente verificar se não está retornando nenhuma exceção (porque o método é void)
         assertThatCode(() -> planetService.remove(1L)).doesNotThrowAnyException();
     }
 
     @Test
-    public void removePlanet_ByUnexistingName_ReturnsEmpty() {
+    public void removePlanet_WithUnexistingId_ThrowsException() {
         // Informando a exceção que será lançada e colocando o stub
         doThrow(new RuntimeException()).when(planetRepository).deleteById(99L);
 

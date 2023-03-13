@@ -67,4 +67,14 @@ public class PlanetModel {
         return EqualsBuilder.reflectionEquals(obj, this);
     }
 
+    @Override
+    public String toString() {
+        return "PlanetModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", climate='" + climate + '\'' +
+                ", terrain='" + terrain + '\'' +
+                '}';
+    }
+
 }
