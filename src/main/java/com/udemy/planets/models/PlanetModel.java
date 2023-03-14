@@ -1,5 +1,6 @@
 package com.udemy.planets.models;
 
+import com.udemy.planets.jacoco.ExcludeFromJacocoGeneratedReport;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.*;
@@ -84,6 +85,7 @@ public class PlanetModel {
         return EqualsBuilder.reflectionEquals(obj, this);
     }
 
+    @ExcludeFromJacocoGeneratedReport
     @Override
     public String toString() {
         return "PlanetModel{" +
