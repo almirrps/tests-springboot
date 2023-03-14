@@ -1,6 +1,9 @@
 package com.udemy.planets.controllers;
 
 import static com.udemy.planets.commons.PlanetConstants.PLANET_MODEL;
+import static com.udemy.planets.commons.PlanetConstants.PLANETS;
+import static com.udemy.planets.commons.PlanetConstants.TATOOINE;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +22,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @WebMvcTest(PlanetController.class)
@@ -96,6 +101,30 @@ public class PlanetControllerTest {
     public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception {
         mockMvc.perform(get("/planets/name/"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void listPlanets_ReturnFilteredPlanets() throws Exception {
+        when(planetService.list(null, null)).thenReturn(PLANETS);
+        when(planetService.list(TATOOINE.getTerrain(), TATOOINE.getClimate())).thenReturn(List.of(TATOOINE));
+
+        mockMvc.perform(get("/planets"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3))); // Validando a propriedade raiz do json
+
+        mockMvc.perform(get("/planets?" + String.format("terrain=%s&climate=%s", TATOOINE.getTerrain(), TATOOINE.getClimate())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0]").value(TATOOINE));
+    }
+
+    @Test
+    public void listPlanets_ReturnsNoPlanets() throws Exception {
+        when(planetService.list(null, null)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/planets"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(0)));
     }
 
 }
